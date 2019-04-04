@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>Tac Tac Toe - Using Socket.IO</title>
+        <style>
+            body {
+                display: flex;
+                padding: 1em;
+            }
+            #board {
+                background: #ccc;
+                padding: 1em;
+                border-radius: 0.5em;
+            }
+            .input {
+                margin-bottom: 2em;
+            }
+        </style>
+        <script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+        <div class='game'>
+            <div class='input'>
+                <input type='text' id='playerMove' />
+                <button onclick='emitMove()'>Make Move</button>
+            </div>
+            <div id='board'></div>
+        </div>
+    </body>
+    <script>
+        var socket = io.connect('http://localhost');
+        socket.on('gameInfo', function (data) {
+            console.log(data);
+            // socket.emit('my other event', { my: 'data' });
+            document.getElementById('board').innerHTML = "";
+            let node = document.createElement('pre');
+            let textnode = document.createTextNode(data.board);
+            node.appendChild(textnode);
+            document.getElementById('board').appendChild(node);
+        });
+
+        const emitMove = () => {
+            socket.emit('playerMove', {playerMove: document.getElementById('playerMove').value});
+            // todo: manage disable on input for different players.
+            document.getElementById('playerMove').value = '';
+            document.getElementById('playerMove').focus();
+        }
+    </script>
+</html>
