@@ -1,4 +1,8 @@
-Tic Tac Toe, using es6/NodeJS, on CLI. Play until board full or winner found!
+Tic Tac Toe, using es6/NodeJS, on CLI, or using Socket.IO. Play until board full or winner found!
+CLI: ./index.js
+SOCKET.IO: ./index-socket-io.js
+
+// FIXME: STILL IN PROGRESS. NOT CURRENTLY EMITTING TO BOTH PLAYER BROWSERS...
 
 SAMPLE OUTPUT:
 ```
