@@ -1,5 +1,5 @@
 {
-  "name": "tic-tac-toe",
+  "name": "tic-tac-toe-on-cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

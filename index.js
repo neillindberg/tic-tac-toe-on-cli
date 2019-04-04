@@ -1,8 +1,7 @@
 const TicTacToe = require('./TicTacToe');
 const readline = require('readline');
-const ttt = new TicTacToe();
 
-console.log(ttt.drawBoard());
+const ttt = new TicTacToe();
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -12,9 +11,11 @@ const rl = readline.createInterface({
 
 rl.on('line', function (line) {
     var playerMove = line.trim();
-    // console.log actually calls stdout.write, so we can simplify by using it.
-    console.log('\n' + ttt.makeMove(playerMove));
+    process.stdout.write('\n' + ttt.makeMove(playerMove) + '\n');
     if (ttt.gameOver) {
         process.exit(1);
     }
 });
+
+// Intro and first draw.
+process.stdout.write('\n Welcom to CLI Tic Tac Toe!\n\n' + ttt.drawBoard() + '\n');
