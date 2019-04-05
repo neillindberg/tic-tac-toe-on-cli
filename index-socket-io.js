@@ -3,7 +3,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const TicTacToe = require('./TicTacToe');
 
-const ttt = new TicTacToe();
+let ttt = new TicTacToe();
 
 server.listen(80);
 // WARNING: app.listen(80) will NOT work here!
@@ -13,13 +13,16 @@ app.get('/', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-    // TODO: make this deliver
     socket.emit('gameInfo', { board: ttt.drawBoard(), player: ttt.getPlayer() });
     socket.on('playerMove', function (data) {
         const {playerMove} = data;
         const moveResult = ttt.makeMove(playerMove);
         socket.emit('gameInfo', { board: moveResult });
+        // Emit to all connections.
         io.emit('gameInfo', { board: moveResult });
-        // io.emit('broadcast'); // emit an event to all connected sockets
+    });
+    socket.on('newGame', () => {
+        ttt = new TicTacToe();
+        socket.emit('gameInfo', { board: ttt.drawBoard(), player: ttt.getPlayer() });
     });
 });
