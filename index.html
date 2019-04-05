@@ -5,20 +5,34 @@
             body {
                 display: flex;
                 padding: 1em;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                justify-content: center;
+            }
+            .game {
+                display: flex;
+                flex-wrap: wrap;
+                width: 420px;
+            }
+            .input {
+                flex: 0 100%;
+                margin-bottom: 2em;
             }
             #board {
                 background: #ccc;
                 padding: 1em;
                 border-radius: 0.5em;
+                flex: 0 100%;
+                text-align: center;
             }
-            .input {
-                margin-bottom: 2em;
+            #instruction {
+                flex: 0 100%;
             }
         </style>
         <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
         <div class='game'>
+            <div id='instruction'></div>
             <div class='input'>
                 <input type='text' id='playerMove' />
                 <button onclick='emitMove()'>Make Move</button>
@@ -30,13 +44,19 @@
     <script>
         var socket = io.connect('http://localhost');
         socket.on('gameInfo', function (data) {
-            console.log(data);
+            console.log(data.board);
             // socket.emit('my other event', { my: 'data' });
             document.getElementById('board').innerHTML = "";
             let node = document.createElement('pre');
-            let textnode = document.createTextNode(data.board);
+            let textnode = document.createTextNode(data.board.board);
             node.appendChild(textnode);
             document.getElementById('board').appendChild(node);
+            //
+            document.getElementById('instruction').innerHTML = "";
+            let messagespan = document.createElement('span');
+            let messagetext = document.createTextNode(data.board.message);
+            messagespan.appendChild(messagetext);
+            document.getElementById('instruction').appendChild(messagespan);
         });
 
         const emitMove = () => {

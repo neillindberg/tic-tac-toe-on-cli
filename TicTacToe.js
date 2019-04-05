@@ -41,7 +41,7 @@ class TicTacToe {
 
     drawBoard() {
         const stringRows = this.board.map(row => row.join('|')), message = this.gameOver ? '\n\nGAME OVER!' : this.getInstruction();
-        return stringRows.join('\n') + message;
+        return { board: stringRows.join('\n'), message };
     }
 
     checkForWinningMove() {
@@ -72,12 +72,16 @@ class TicTacToe {
             // Check for winner if possible (should be at least the 5th move).
             if (this.moves >= 4 && this.checkForWinningMove()) {
                 this.gameOver = true;
-                return this.drawBoard() + '\nWINNNER WINNER CHICKEN DINNER!\nPLAYER [[' + this.getPlayer() +']] IS THE WINNER!';
+                const result = this.drawBoard();
+                result.message += '\nWINNNER WINNER CHICKEN DINNER!\nPLAYER [[' + this.getPlayer() + ']] IS THE WINNER!';
+                return result;
             }
             // Pre-incrementing moves if 8 then the board is full.
             if (this.moves === 8) {
                 this.gameOver = true;
-                return this.drawBoard() + '\nNO WINNER! Eveyone is a loser...';
+                const result = this.drawBoard();
+                result.message += '\nNO WINNER! Eveyone is a loser...';;
+                return result;
             }
             this.incrementMoves();
             return this.drawBoard();
