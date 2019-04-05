@@ -16,9 +16,10 @@ io.on('connection', function (socket) {
     // TODO: make this deliver
     socket.emit('gameInfo', { board: ttt.drawBoard(), player: ttt.getPlayer() });
     socket.on('playerMove', function (data) {
-        console.log('playerMove', data);
         const {playerMove} = data;
         const moveResult = ttt.makeMove(playerMove);
         socket.emit('gameInfo', { board: moveResult });
+        io.emit('gameInfo', { board: moveResult });
+        // io.emit('broadcast'); // emit an event to all connected sockets
     });
 });
