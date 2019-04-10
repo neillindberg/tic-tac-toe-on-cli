@@ -3,26 +3,33 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const TicTacToe = require('./TicTacToe');
 
-let ttt = new TicTacToe();
-
 server.listen(80);
-// WARNING: app.listen(80) will NOT work here!
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+let connectionCount = 0;
+
 io.on('connection', function (socket) {
-    socket.emit('gameInfo', { board: ttt.drawBoard(), player: ttt.getPlayer() });
-    socket.on('playerMove', function (data) {
-        const {playerMove} = data;
-        const moveResult = ttt.makeMove(playerMove);
-        socket.emit('gameInfo', { board: moveResult });
-        // Emit to all connections.
-        io.emit('gameInfo', { board: moveResult });
+    connectionCount++;
+
+    io.emit('connectionCount', {connectionCount});
+
+    socket.on('playerMove', (data) => {
+        const { playerMove } = data;
+        const { board, message } = ttt.makeMove(playerMove);
+        io.emit('gameInfo', { board, message, player: ttt.getPlayer() });
     });
+
     socket.on('newGame', () => {
         ttt = new TicTacToe();
-        socket.emit('gameInfo', { board: ttt.drawBoard(), player: ttt.getPlayer() });
+        const { board, message } = ttt.drawBoard();
+        io.emit('gameInfo', { board, message, player: ttt.getPlayer() });
+    });
+
+    socket.on('disconnect', () => {
+        connectionCount--;
+        io.emit('connectionCount', { connectionCount });
     });
 });

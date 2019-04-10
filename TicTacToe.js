@@ -35,8 +35,8 @@ class TicTacToe {
     }
 
     getInstruction() {
-        return '\n\nPlayer [' + this.getPlayer() + '], please enter cooridinates ' +
-                'in the form/range of 1:1 (upper left) to 3:3 (lower right):';
+        return '\nPlayer [' + this.getPlayer() + '], please enter cooridinates ' +
+                'in the form/range of 1:1 (upper left) to 3:3 (lower right): ';
     }
 
     drawBoard() {
@@ -63,9 +63,9 @@ class TicTacToe {
     makeMove(coords) {
         const [row, column] = coords.split(':');
         // Enforce numeric input.
-        if(isNaN(row) || isNaN(column)) return this.getInstruction();
+        if(isNaN(row) || isNaN(column)) return {message: this.getInstruction()};
         // Checking num-based range here is not needed as the array spot will simply be undefined if out of range.
-        if (this.board[row - 1][column - 1] === undefined) return this.getInstruction();
+        if (this.board[row - 1][column - 1] === undefined) return {message: this.getInstruction()};
         // Passed validation. 
         if (this.board[row - 1][column - 1] === '-') {
             this.board[row - 1][column - 1] = this.getPlayer();
@@ -86,7 +86,7 @@ class TicTacToe {
             this.incrementMoves();
             return this.drawBoard();
         } else {
-            return '\nSpace taken, try again!';
+            return {message: 'Space taken, try again: '};
         }
     }
 };

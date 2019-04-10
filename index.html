@@ -7,59 +7,79 @@
                 padding: 1em;
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
                 justify-content: center;
+                background: #000;
+                color: #fff;
             }
             .game {
                 display: flex;
                 flex-wrap: wrap;
+                align-items: center;
                 width: 420px;
-            }
-            .input {
-                flex: 0 100%;
-                margin-bottom: 2em;
-            }
-            #board {
-                background: #ccc;
+                border: 2px solid #ccc;
                 padding: 1em;
-                border-radius: 0.5em;
-                flex: 0 100%;
-                text-align: center;
             }
             #instruction {
                 flex: 0 100%;
             }
+            #input {
+                flex: 0 100%;
+                margin-bottom: em;
+            }
+            #board {
+                flex: 0 100%;
+                text-align: center;
+            }
+            #socket-info {
+                width: 220px;
+                color: #999;
+                background: azure;
+            }
         </style>
-        <script src="/socket.io/socket.io.js"></script>
     </head>
     <body>
         <div class='game'>
             <div id='instruction'></div>
-            <div class='input'>
+            <div id='input'>
                 <input type='text' id='playerMove' />
                 <button onclick='emitMove()'>Make Move</button>
                 <button onclick='newGame()'>New Game</button>
             </div>
             <div id='board'></div>
         </div>
+        <div id='socket-info'>
+        </div>
     </body>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
-        var socket = io.connect('http://localhost');
+        const socket = io.connect('http://localhost');
+        
+        socket.on('connectionCount', function ({connectionCount}) {
+            document.getElementById('socket-info').innerHTML = "";
+            let messagespan = document.createElement('span');
+            let messagetext = document.createTextNode(connectionCount);
+            messagespan.appendChild(messagetext);
+            document.getElementById('socket-info').appendChild(messagespan);
+        });
+
         socket.on('gameInfo', function (data) {
-            console.log(data.board);
+            console.log('gameInfo', data);
+            const {board, message} = data;
             // socket.emit('my other event', { my: 'data' });
             document.getElementById('board').innerHTML = "";
             let node = document.createElement('pre');
-            let textnode = document.createTextNode(data.board.board);
+            let textnode = document.createTextNode(board);
             node.appendChild(textnode);
             document.getElementById('board').appendChild(node);
             //
             document.getElementById('instruction').innerHTML = "";
             let messagespan = document.createElement('span');
-            let messagetext = document.createTextNode(data.board.message);
+            let messagetext = document.createTextNode(message);
             messagespan.appendChild(messagetext);
             document.getElementById('instruction').appendChild(messagespan);
         });
 
         const emitMove = () => {
+            console.log('MOVE socket info: ', socket);
             socket.emit('playerMove', {playerMove: document.getElementById('playerMove').value});
             // todo: manage disable on input for different players.
             document.getElementById('playerMove').value = '';
@@ -67,10 +87,12 @@
         };
         
         const newGame = () => {
+            console.log('NEW GAME socket info: ', socket);
             document.getElementById('playerMove').value = '';
             document.getElementById('playerMove').focus();
             // emit to me that i need gameInfo.
             socket.emit('newGame', {});
         };
+
     </script>
 </html>

@@ -10,12 +10,16 @@ const rl = readline.createInterface({
 });
 
 rl.on('line', function (line) {
-    var playerMove = line.trim();
-    process.stdout.write('\n' + ttt.makeMove(playerMove) + '\n');
+    const playerMove = line.trim();
+    const result = ttt.makeMove(playerMove);
+    if (result.board) process.stdout.write('\n' + result.board);
+    if (result.message) process.stdout.write('\n' + result.message);
+
     if (ttt.gameOver) {
         process.exit(1);
     }
 });
 
 // Intro and first draw.
-process.stdout.write('\n Welcom to CLI Tic Tac Toe!\n\n' + ttt.drawBoard() + '\n');
+const {board, message} = ttt.drawBoard();
+process.stdout.write('\n Welcom to CLI Tic Tac Toe!\n\n' + board + '\n' + message);
